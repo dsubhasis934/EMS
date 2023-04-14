@@ -6,6 +6,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { FaUserEdit } from 'react-icons/fa'
 import { GoSignIn } from 'react-icons/go'
 import { AiOutlineLogin } from 'react-icons/ai'
+import { login_sidebar_image, user_update } from '../images/Images';
 function Signup() {
   const notify = () => toast.success("User Successfully Signin");
   const notifyUpdate = () => toast.success("User Successfully Updated");
@@ -95,15 +96,15 @@ function Signup() {
   const loadUserdata = async () => {
     await axios.get(`http://localhost:3000/api/fetchuser?id=${id}`)
       .then(response => {
-        console.log(response);
+        //console.log(response);
         const { data, message, success } = response.data;
         if (success) {
           setCredentials({
-            name: data.name,
-            email: data.email,
-            secure_phase: data.secure_phase,
-            user_type: data.user_type,
-            image: data.image
+            name: data[0].name,
+            email: data[0].email,
+            secure_phase: data[0].secure_phase,
+            user_type: data[0].user_type,
+            image: data[0].image
           })
         }
       })
@@ -117,60 +118,95 @@ function Signup() {
   }, [])
 
   return (
-    <section className="signup py-3 gradient-custom">
-      <div className="signup container py-5 h-100">
-        <h1 className="registration-form-heading text-underline"><u>{!id ? "Register here" : "update here"}</u></h1>
-        <form onSubmit={handleSubmit} className="signup-form p-3">
-          <div className="form-group">
-            <label htmlFor="name">Name</label>
-            <input type="text" name="name" value={credentials.name} onChange={onChanges} className="form-control" id="exampleInputName1" aria-describedby="emailHelp" placeholder="Enter name" />
-          </div>
-          <div className="form-group">
-            <label htmlFor="exampleInputEmail1">Email address</label>
-            <input type="email" disabled={!id ? "" : "true"} name="email" value={credentials.email} onChange={onChanges} className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email" />
-            <small id="emailHelp" className="form-text text-muted">We'll never share your email with anyone else.</small>
-          </div>
-          <div className="form-group" style={!id ? { "display": "block" } : { "display": "none" }}>
-            <label htmlFor="exampleInputPassword1">Password</label>
-            <input display="none" type={checked ? "text" : "password"} name="password" value={credentials.password} onChange={onChanges} className="form-control" id="exampleInputPassword1" placeholder="Password" />
-          </div>
-          <div className="form-group">
-            <label htmlFor="exampleInputEmail1">User Type</label>
-            <input type="text" name="user_type" value={credentials.user_type} onChange={onChanges} className="form-control" id="exampleInputUsertype1" aria-describedby="emailHelp" placeholder="Enter your user type" />
-          </div>
-          <div className="form-group">
-            <label htmlFor="exampleInputImage">Upload Image</label>
-            <img
-              src={
-                typeof credentials.image === "string" || !(credentials.image instanceof Blob)
-                  ? ""
-                  : URL.createObjectURL(credentials.image)
-              }
-              height={100}
-              width={150}
-              alt="upload"
-              onClick={() => document.getElementById("upload_img").click()}
-            />
+    <section className="h-100 chat-background">
+      <div className="container py-5 h-100">
+        <div className="row d-flex justify-content-center align-items-center h-100">
+          <div className="col">
+            <div className="card card-registration my-4">
+              <div className="row g-0">
+                <div className="col-xl-6 d-none d-xl-block">
+                  <img src={!id ? login_sidebar_image : user_update}
+                    alt="Sample photo" className="img-fluid" style={{ borderTopLeftRadius: ".25rem", borderBottomLeftRadius: ".25rem", height: 800 }}
+                  />
+                </div>
+                <div className="col-xl-6">
+                  <div className="card-body p-md-5 text-black">
+                    <h3 className="registration-form-heading text-center text-underline"><u>{!id ? "Register here" : "update here"}</u></h3>
+                    <form onSubmit={handleSubmit} className="signup-form p-3">
+                      <div className="row">
+                        <div className="col-md-6 mb-4">
+                          <div className="form-outline">
+                            <input type="text" name="name" value={credentials.name} onChange={onChanges} className="form-control" id="exampleInputName1" aria-describedby="emailHelp" placeholder="Enter name" />
+                            <label className="form-label" htmlFor="form3Example1m">Name</label>
+                          </div>
+                        </div>
+                      </div>
 
-            {/* {credentials.image && typeof credentials.image !== "string" && (
-              <button onClick={() => URL.revokeObjectURL(credentials.image)}>
-                Remove Image
-              </button>
-            )} */}
-            <input hidden type="file" name="image" id="upload_img" onChange={e => setCredentials(d => ({ ...d, image: e.target.files[0] }))} className="form-control" aria-describedby="emailHelp" placeholder="uplaod your image" />
+
+                      <div className="form-outline mb-4">
+                        <input type="email" disabled={!id ? "" : true} name="email" value={credentials.email} onChange={onChanges} className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email" />
+                        <label className="form-label" htmlFor="form3Example8">Email</label>
+                      </div>
+
+
+
+
+
+                      <div className="form-outline mb-4" style={!id ? { "display": "block" } : { "display": "none" }}>
+                        <input display="none" type={checked ? "text" : "password"} name="password" value={credentials.password} onChange={onChanges} className="form-control" id="exampleInputPassword1" placeholder="Password" />
+                        <label className="form-label" htmlFor="form3Example90">Password</label>
+                      </div>
+
+
+                      <div className="form-outline mb-4">
+                        <input type="text" name="user_type" value={credentials.user_type} onChange={onChanges} className="form-control" id="exampleInputUsertype1" aria-describedby="emailHelp" placeholder="Enter your Designation" />
+                        <label className="form-label" htmlFor="form3Example97">Designation</label>
+                      </div>
+                      <div className="form-group">
+                        <label htmlFor="exampleInputImage">Upload Image</label>
+                        <img
+                          src={
+                            typeof credentials.image === "string" || !(credentials.image instanceof Blob)
+                              ? `http://127.0.0.1:3000/images/${credentials.image}`
+                              : URL.createObjectURL(credentials.image)
+                          }
+                          height={100}
+                          width={150}
+                          alt="upload"
+                          onClick={() => document.getElementById("upload_img").click()}
+                        />
+
+                        {/* {credentials.image && typeof credentials.image !== "string" && (
+                <button onClick={() => URL.revokeObjectURL(credentials.image)}>
+                  Remove Image
+                </button>
+              )} */}
+                        <input hidden type="file" name="image" id="upload_img" onChange={e => setCredentials(d => ({ ...d, image: e.target.files[0] }))} className="form-control" aria-describedby="emailHelp" placeholder="uplaod your image" />
+                      </div>
+                      <div className="form-group" style={!id ? { "display": "block" } : { "display": "none" }}>
+                        <label htmlFor="exampleInputEmail1">Sequre Question</label>
+                        <input type="text" name="secure_phase" value={credentials.secure_phase} onChange={onChanges} className="form-control" id="exampleInputSecurequestion1" aria-describedby="emailHelp" placeholder="Enter Your secure question" />
+                      </div>
+                      <div style={!id ? { "display": "block" } : { "display": "none" }} className="checkbox">
+                        <input type="checkbox" checked={checked} onChange={() => setChecked((d) => !d)} />show password
+                      </div>
+                      <div className="d-flex justify-content-center pt-3">
+                        <button type="submit" className="btn btn-success m-3">{(id == null) ? "Sign In" : "Update"} {(id == null) ? <GoSignIn className="signinIcon fs-5" /> : <FaUserEdit className="updateIcon fs-5" />}</button>
+                        <Link to='/login' className="m-3 btn btn-primary" style={!id ? { "display": "block" } : { "display": "none" }}>Login <AiOutlineLogin /></Link>
+                        <ToastContainer autoClose={1500} />
+                      </div>
+                      {/* <div className="d-flex justify-content-end pt-3">
+                        <button type="submit" value={(id == null) ? "Signin" : "Update"} className="btn btn-success mt-2">{(id == null) ? <GoSignIn className="signinIcon fs-5" /> : <FaUserEdit className="updateIcon fs-5" />}</button>
+                        <Link to='/login' className="m-3 btn btn-primary" style={!id ? { "display": "block" } : { "display": "none" }}>Login <AiOutlineLogin /></Link>
+                        <ToastContainer autoClose={1500} />
+                      </div> */}
+                    </form>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
-          <div className="form-group" style={!id ? { "display": "block" } : { "display": "none" }}>
-            <label htmlFor="exampleInputEmail1">Sequre Question</label>
-            <input type="text" name="secure_phase" value={credentials.secure_phase} onChange={onChanges} className="form-control" id="exampleInputSecurequestion1" aria-describedby="emailHelp" placeholder="Enter Your secure question" />
-          </div>
-          <div style={!id ? { "display": "block" } : { "display": "none" }} className="checkbox">
-            <input type="checkbox" checked={checked} onChange={() => setChecked((d) => !d)} />show password
-          </div>
-          <button type="submit" value={(id == null) ? "Signin" : "Update"} className="btn btn-success mt-2">{(id == null) ? <GoSignIn className="signinIcon fs-5" /> : <FaUserEdit className="updateIcon fs-5" />}</button>
-          <Link to='/login' className="m-3 btn btn-primary" style={!id ? { "display": "block" } : { "display": "none" }}>Login <AiOutlineLogin /></Link>
-          <ToastContainer autoClose={1500} />
-        </form>
-        {/* <button type="submit" className="btn btn-success" onClick={updateuser}>updateuser</button> */}
+        </div>
       </div>
     </section>
   )

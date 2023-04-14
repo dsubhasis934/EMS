@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom';
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import reactLogo from './assets/react.svg'
 import axios from 'axios';
@@ -10,12 +11,26 @@ import Showusers from './Components/Showusers';
 import Forgotpassword from './Components/Forgotpassword';
 import io from "socket.io-client";
 import Chat from './Components/Chat';
+import Navbar from './Components/Navbar';
 var socket = io.connect("http://localhost:3000");
 
 function App() {
+  const navigate = useNavigate();
+  // const [isLoggedIn, setIsLoggedIn] = useState(false);
 
+  // function handleLogin() {
+  //   setIsLoggedIn(true);
+  //   navigate('/login')
+  // }
+
+  // function handleLogout() {
+  //   setIsLoggedIn(false);
+  //   localStorage.removeItem('token');
+  //   navigate('/signup');
+  // }
   return (
-    <BrowserRouter>
+    <>
+      <Navbar />
       <Routes>
         <Route path="/" element={<Home socket={socket} />} />
         <Route path="/login" element={<Login />} />
@@ -26,7 +41,7 @@ function App() {
         <Route path="/chat" element={<Chat socket={socket} />} />
         {/* <Route path="/chat/:id" element={<Chat socket={socket} />} /> */}
       </Routes>
-    </BrowserRouter>
+    </>
 
   )
 }

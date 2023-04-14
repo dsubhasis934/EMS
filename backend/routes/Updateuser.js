@@ -19,22 +19,24 @@ route.patch("/updateusers", upload.single('image'), (req, res) => {
     user.findById(id)
         .then(resp => {
             console.log(req);
-            //  res.status(200).json({ success: true, message: "id find successfully", data: resp }) 
             const { name, user_type, secure_phase } = req.body;
-            const { filename } = req.file;
-            console.log(name, user_type, secure_phase, filename);
-            user.findByIdAndUpdate(id, {
+            let updateFields = {
                 name: name,
                 user_type: user_type,
                 secure_phase: secure_phase,
-                image: filename
-            }, { new: true })
+            };
+            if (req.file) {
+                const { filename } = req.file;
+                updateFields.image = filename;
+            }
+            user.findByIdAndUpdate(id, updateFields, { new: true })
                 .then(response => {
                     console.log(response)
                     res.status(200).json({ success: true, message: "id updated successfully", data: response })
                 })
-                .catch(error => { res.status(200).json({ success: false, message: "error occured", err: error.message }) })
+                .catch(error => { res.status(200).json({ success: false, message: "error occurred", err: error.message }) })
         })
         .catch(err => { res.status(200).json({ success: false, message: "id not found", err: err.message }) })
 })
+
 module.exports = route;
