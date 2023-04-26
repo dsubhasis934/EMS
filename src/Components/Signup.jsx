@@ -6,7 +6,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { FaUserEdit } from 'react-icons/fa'
 import { GoSignIn } from 'react-icons/go'
 import { AiOutlineLogin } from 'react-icons/ai'
-import { login_sidebar_image, user_update } from '../images/Images';
+import { login_sidebar_image, user_update,login_image,update_image } from '../images/Images';
 function Signup() {
   const notify = () => toast.success("User Successfully Signin");
   const notifyUpdate = () => toast.success("User Successfully Updated");
@@ -125,7 +125,7 @@ function Signup() {
             <div className="card card-registration my-4">
               <div className="row g-0">
                 <div className="col-xl-6 d-none d-xl-block">
-                  <img src={!id ? login_sidebar_image : user_update}
+                  <img src={!id ? login_image : update_image}
                     alt="Sample photo" className="img-fluid" style={{ borderTopLeftRadius: ".25rem", borderBottomLeftRadius: ".25rem", height: 800 }}
                   />
                 </div>

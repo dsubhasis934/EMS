@@ -3,6 +3,8 @@ import { Link } from 'react-router-dom'
 import { useNavigate } from 'react-router-dom';
 import { AiOutlineLogout } from 'react-icons/ai'
 import { Socket } from 'socket.io-client';
+//import Typing from 'react-typing-animation';
+
 import axios from 'axios';
 function Home({ socket }) {
   const [loggedinUser, setLoggedinUser] = useState([]);
@@ -50,17 +52,32 @@ function Home({ socket }) {
     <>
 
       <div className="d-flex flex-wrap flex-column align-items-center chat-background">
-        <h1>Welcome {name}</h1>
+        <h1>welcome</h1>
+
         {loggedinUser && loggedinUser.map((elem, id) => {
           return (
-            <div key={id}>
-              <p>{elem.name}</p>
+            <div className="card text-center" key={id}>
+              <div className="card-header">
+                {elem.name}
+              </div>
+              <div className="card-body">
+                <img src={
+                  typeof elem.image === "string" || !(elem.image instanceof Blob)
+                    ? `http://127.0.0.1:3000/images/${elem.image}`
+                    : URL.createObjectURL(elem.image)
+                } alt="default" height={100}
+                  width={150} />
+                <h5 className="card-title mt-5">{elem.email}</h5>
+                <p className="card-text">{elem.user_type}.</p>
+               
+              </div>
+              <Link to="/showusers" className="pt-3">click here to show database logged in users</Link>
             </div>
           )
 
         })}
-        <button className="btn btn-danger text-white mt-2" onClick={logout}>logout <AiOutlineLogout className="logoutIcon" /></button><br />
-        <Link to="/showusers" className="pt-3 text-danger">click here to show database logged in users</Link>
+   <button className="btn btn-danger text-white mt-2" onClick={logout}>logout <AiOutlineLogout className="logoutIcon" /></button><br />
+
       </div>
     </>
 

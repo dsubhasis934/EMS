@@ -2,4 +2,6 @@ import React from 'react'
 import default_image from '../images/no_logo.webp';
 import login_sidebar_image from '../images/login_sidebar_image.webp';
 import user_update from '../images/user_update.webp';
-export { default_image, login_sidebar_image, user_update }
+import login_image from '../images/login_image.jpg';
+import update_image from '../images/update_image.jpg';
+export { default_image, login_sidebar_image, user_update,login_image,update_image }
