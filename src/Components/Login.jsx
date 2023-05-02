@@ -99,7 +99,7 @@ function Login() {
                         </form>
                       </div>
                       <div className="d-flex justify-content-around">
-                        <Link className="mt-5 fs-3 color-red-100" to='/forgotpassword'>forgot password?</Link>
+                        <Link className="mt-5 fs-3 color-red-100" to='/sendmail'>forgot password?</Link>
                         <Link className="mt-5 fs-3 color-red-100" to='/signup'>Register Here?</Link>
                       </div>
                     </div>

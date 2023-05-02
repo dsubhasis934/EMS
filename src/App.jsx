@@ -12,6 +12,7 @@ import Forgotpassword from './Components/Forgotpassword';
 import io from "socket.io-client";
 import Chat from './Components/Chat';
 import Navbar from './Components/Navbar';
+import Sendemail from './Components/Sendemail';
 var socket = io.connect("http://localhost:3000");
 
 function App() {
@@ -37,7 +38,8 @@ function App() {
         <Route path="/signup" element={<Signup />} />
         <Route path="/signup/:id" element={<Signup />} />
         <Route path="/showusers" element={<Showusers socket={socket} />} />
-        <Route path="/forgotpassword" element={<Forgotpassword />} />
+        <Route path="/sendmail" element={<Sendemail />} />
+        <Route path="/forgotpassword/:id" element={<Forgotpassword />} />
         <Route path="/chat" element={<Chat socket={socket} />} />
         {/* <Route path="/chat/:id" element={<Chat socket={socket} />} /> */}
       </Routes>

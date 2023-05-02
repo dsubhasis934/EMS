@@ -108,7 +108,7 @@ function Chatbox({ socket, userName, room, receiver, receiverId, image }) {
 
         },)
 
-    }, [socket, showMessageState])
+    }, [socket]) //remove "showMessageState" from dependancy array
     // useEffect(() => {
     //     socket.on('notification', (data) => {
     //         if (data.type === 'message_received') {

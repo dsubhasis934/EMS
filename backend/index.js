@@ -120,6 +120,7 @@ app.use('/api', require("./routes/Fetchuser"))
 app.use('/api', require("./routes/Chatuser"))
 app.use('/api', require("./routes/FetchMessage"))
 app.use('/api', require("./routes/Fetchreceivers"))
+app.use('/api', require("./routes/sendlink"))
 app.use('/api', require("./routes/Lastmessage"))
 app.use("/images", express.static("uploads"));
 server.listen(port, () => {
