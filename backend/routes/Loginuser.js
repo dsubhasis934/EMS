@@ -19,7 +19,7 @@ route.post('/loginuser',
                                 jwt.sign(
                                     { name: resp[0].name, email: resp[0].email, user_type: resp[0].user_type, _id: resp[0]._id },
                                     jwtSecret,
-                                    // { expiresIn: '12h' }, 
+                                    { expiresIn: '12h' },
                                     (error, token) => {
                                         error ? res.status(200).json({ success: false, message: "Error Occured !", error })
                                             : res.status(200).json({ success: true, message: "User loggedin", token, name: resp[0].name, _id: resp[0]._id })

@@ -6,7 +6,10 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { AiOutlineLogout } from 'react-icons/ai'
 import { AiOutlineLogin } from 'react-icons/ai'
+import { useDispatch } from 'react-redux';
 function Login() {
+  // const value = useSelector((state) => state.counter.value)
+  const dispatch = useDispatch();
   const getToken = localStorage.getItem("token");
   const findToken = JSON.parse(getToken)
   const notify = () => toast.success("user loggedin");

@@ -8,7 +8,39 @@
   font-family: "poppins";
 
 }
+*{
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+.navbar.navbar-default {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.navbar {
+  height:100%;
+  margin-top:10px;
+  padding:24px;
+  position: relative;
+  overflow-x: hidden;
+}
+.brand {
+  position: absolute;
+  /* left: 50%;
+  margin-left: -50px !important;  /* 50% of your logo width */
+  /* display: block; */ 
+}
+.gradient-custom {
+  /* fallback for old browsers */
+  background: hsla(192, 95%, 50%, 1);
 
+  background: linear-gradient(270deg, hsla(192, 95%, 50%, 1) 0%, hsla(225, 89%, 47%, 1) 100%);
+
+  background: -moz-linear-gradient(270deg, hsla(192, 95%, 50%, 1) 0%, hsla(225, 89%, 47%, 1) 100%);
+
+  background: -webkit-linear-gradient(270deg, hsla(192, 95%, 50%, 1) 0%, hsla(225, 89%, 47%, 1) 100%);
+  }
 .navbar-header {
   display: flex;
 }
@@ -250,7 +282,8 @@ img {
 .mesgs {
   float: left;
   padding: 30px 15px 0 25px;
-  width: 60%;
+  width: 100%;
+  /* if we need recent chat section then this will 60% */
 }
 
 .sent_msg p {
@@ -286,7 +319,12 @@ img {
   border-top: 1px solid #c4c4c4;
   position: relative;
 }
-
+/* chat-box section */
+.left-room {
+  display: flex;
+  justify-content: center;
+  margin: 9px;
+}
 .msg_send_btn {
   background: #05728f none repeat scroll 0 0;
   border: medium none;
@@ -343,13 +381,13 @@ img {
 }
 
 .gradient-custom {
-  /* fallback for old browsers */
+ 
   background: #f093fb;
 
-  /* Chrome 10-25, Safari 5.1-6 */
+
   background: -webkit-linear-gradient(to bottom right, rgba(240, 147, 251, 1), rgba(245, 87, 108, 1));
 
-  /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+  
   background: linear-gradient(to bottom right, rgba(240, 147, 251, 1), rgba(245, 87, 108, 1))
 }
 

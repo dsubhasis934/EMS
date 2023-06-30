@@ -33,6 +33,9 @@ const chatSchema = new Schema({
     image: {
         type: String
     },
+    authorImage: {
+        type: String
+    },
     time: {
         type: String,
         Required: true

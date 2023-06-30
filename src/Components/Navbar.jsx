@@ -1,22 +1,21 @@
 import React, { useState, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 function Navbar() {
+    const token = localStorage.getItem('token');
     return (
         <>
-            <nav className="navbar navbar-default">
-                <div className="container-fluid">
-                    <div className="navbar-header d-flex justify-content-center">
-                        <a className="navbar-brand align-items-center" href="/">
-                            Employeee Management System
-                        </a>
+            <div class="navbar navbar-default">
+                <div class="navbar-inner">
+                    <div class="container">
+                        <Link class="brand" style={{ margin: 0, float: "none" }} to="/">
+                            <p>Employee Management System</p></Link>
+
+                        {/* <div className="logout" style={{ display: !token ? 'none' : 'block' }}>
+                            <button>Logout</button>
+                        </div> */}
                     </div>
-                    {/* {isLoggedIn && getToken ? (
-                        <button onClick={onLogout}>Logout</button>
-                    ) : (
-                        <button onClick={onLogin}>Login</button>
-                    )} */}
                 </div>
-            </nav>
+            </div >
 
         </>
     )

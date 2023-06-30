@@ -16,8 +16,8 @@ connectdb();
 //code for set socket.io
 const io = new Server(server, {
   cors: {
-    origin: ["http://127.0.0.1:5173","http://localhost:5173"],
-    methods: ["POST", "GET","PATCH","DELETE","PUT"]
+    origin: ["http://127.0.0.1:5173", "http://localhost:5173"],
+    methods: ["POST", "GET", "PATCH", "DELETE", "PUT"]
   }
 })
 
@@ -28,7 +28,7 @@ io.on('connection', (socket) => {
       userList.push(id);
     }
 
-    console.log(userList);
+    console.log("hey " + userList);
     //userList[id] = socket.id
     //console.log(`userlist ${userList}`)
     console.log(`userid connected with ${id}`)
@@ -81,6 +81,7 @@ io.on('connection', (socket) => {
   socket.on("send_sms", (data) => {
     console.log(data)
     user.insertMany(data);
+    console.log(user)
     io.to(data.room).emit("received_data", data)
 
 

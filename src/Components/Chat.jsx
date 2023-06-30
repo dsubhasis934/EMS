@@ -2,7 +2,9 @@ import React, { useEffect, useState } from 'react'
 import { useLocation, useParams } from 'react-router-dom';
 import Chatbox from './Chatbox';
 import axios from 'axios';
+import { useSelector } from 'react-redux';
 function Chat({ socket }) {
+    const loggedUserData = useSelector((state) => state.counter.loggedInuser)
     const getToken = localStorage.getItem("token");
     const [takeReceiver, setTakeReceiver] = useState('');
     const findToken = JSON.parse(getToken)
@@ -76,7 +78,7 @@ function Chat({ socket }) {
                 <h1>OOPS!!User not found</h1>
 
             ) : (
-                <Chatbox socket={socket} userName={name} room={roomId} receiver={receiverName} receiverId={receiverId} image={image} />
+                <Chatbox socket={socket} userName={name} room={roomId} receiver={receiverName} receiverId={receiverId} image={image} authorImage={loggedUserData[0].image} />
             )
 
             }

@@ -19,6 +19,7 @@ function Users({ data, userType, socket, loginUserId }) {
     const [id, setId] = useState('');
     const [show, setShow] = useState(false);
     const navigate = useNavigate();
+
     useEffect(() => {
         socket.on("user_List", (data) => {
             console.log(data);
@@ -89,7 +90,7 @@ function Users({ data, userType, socket, loginUserId }) {
         const msgItem = userData.find(({ _id }) => {
             return (msgid === _id)
         })
-        //console.log(msgItem);
+        console.log(msgItem);
         const rmtext = msgItem.name.toLowerCase().split(" ").join("");
         const lowercaseName = findToken.name.toLowerCase();
         const mergeName = rmtext.concat(lowercaseName);
@@ -131,7 +132,7 @@ function Users({ data, userType, socket, loginUserId }) {
                 </Modal.Footer>
             </Modal>
             {userData && userData.map((elem) => {
-                console.log(elem);
+                // console.log(elem);
                 const { _id, name, email, image } = elem;
                 return (
                     <>

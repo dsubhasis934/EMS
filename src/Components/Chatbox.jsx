@@ -6,25 +6,32 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { AiOutlineFileSearch } from 'react-icons/ai'
 import { default_image } from '../images/Images';
-function Chatbox({ socket, userName, room, receiver, receiverId, image }) {
-    const notify = () => toast.success("Message Received");
+import useSWR from 'swr'
+import { useSelector } from 'react-redux';
+function Chatbox({ socket, userName, room, receiver, receiverId, image, authorImage }) {
+    const loggedUserData = useSelector((state) => state.counter.loggedInuser)
+    console.log(loggedUserData[0].image)
+    const notify = () => toast.success(`Message Received`);
     const [message, setMessage] = useState("")
     const [receiverName, setReceieverName] = useState('');
     const [roomId, setRoomId] = useState('')
     const [senderName, setSenderName] = useState("")
+    const [lastMessages, setLastMessages] = useState([]);
     const [showMessage, setShowMessage] = useState([])
     const [showMessageState, setShowMessageState] = useState([])
     const [displayReceiverList, setDisplayReceiverList] = useState([]);
-    const [receiverList, setReceiverList] = useState([])
+    const [displayReceivedMsg, setDisplayReceivedMsg] = useState({ message: {} })
+    const [receiverList, setReceiverList] = useState()
+
     const getToken = localStorage.getItem("token");
     const findToken = JSON.parse(getToken)
+    console.log(findToken);
     const { name, id } = findToken
     const [notification, setNotification] = useState([]);
     const [searchInput, setSearchInput] = useState('');
     const navigate = useNavigate();
     const [selectedChat, setSelectedChat] = useState([])
     const [imageUrl, setImageUrl] = useState('');
-
     useEffect(() => {
         axios.get(`http://localhost:3000/api/fetchchat?room=${room}&receiver=${receiver}&receiverId=${receiverId}`)
             .then(resp => {
@@ -56,41 +63,22 @@ function Chatbox({ socket, userName, room, receiver, receiverId, image }) {
                 receiver: receiver,
                 receiverId: receiverId,
                 time: formattedHours + ":" + formattedMinutes + " " + period,
-                image: image
+                image: image,
+                authorImage: authorImage
             }
-            // const updatedReceiverList = receiverList.map(receiver => {
-            //     if (receiver._id === receiverId) {
-            //         return {
-            //             ...receiver,
-            //             lastMessage: messageData
-            //         }
-            //     }
-            //     return receiver;
-            // });
-            // setReceiverList(updatedReceiverList);
-            // setDisplayReceiverList(updatedReceiverList);
-            // console.log(JSON.stringify(messageData));
 
-            // await axios.post(
-            //     "http://localhost:3000/api/lastMessage",
-            //     messageData
-            // ).then(resp => {
-            //     const { success, message, data } = resp.data;
-            //     if (success) {
-            //         // data.deleteOne({ _id: messageData._id });
-
-            //         // // Insert a new document
-            //         // const newDocument = data.create(messageData);
-            //         //socket.emit("send_sms", newDocument)
-            //         console.log(data);
-            //     }
-            // });
 
             await socket.emit("send_sms", messageData)
             setShowMessageState(messageData);
             setShowMessage((oldmessage) => { return [...oldmessage, messageData] });
             setMessage("");
-
+            setLastMessages((prevMessages) => ({
+                ...prevMessages,
+                [receiverId]: {
+                    message: message,
+                    time: messageData.time,
+                },
+            }));
         }
 
     }
@@ -101,7 +89,13 @@ function Chatbox({ socket, userName, room, receiver, receiverId, image }) {
             if (findToken.id == data.receiverId) {
 
                 setShowMessage((oldmessage) => { return [...oldmessage, data] });
-                //setDisplayReceiverList(data);
+                const { author, authorId, id, image, message, receiver, receiverId, room, time, authorImage } = data
+                const displayReceivedMsg = { message: { author, authorId, id, image, message, receiver, receiverId, room, time, authorImage } };
+
+                setDisplayReceivedMsg(displayReceivedMsg);
+                console.log(displayReceivedMsg);
+
+                setDisplayReceiverList([displayReceivedMsg]);
                 //console.log(data);
                 notify();
             }
@@ -174,60 +168,84 @@ function Chatbox({ socket, userName, room, receiver, receiverId, image }) {
 
 
     // useEffect(() => {
-    //     //console.log(findToken);
-    //     socket.on("message_received", (data) => {
-    //         //console.log(data);
-    //         //alert(data);
-    //         if (findToken.id == data.receiverId) {
-    //             console.log("message recived");
+    //     axios.get('http://localhost:3000/api/fetchreceiver')
+    //         .then(res => {
+    //             console.log(res);
+    //             const { status, data, message } = res.data;
+    //             console.log(data);
+    //             if (status) {
 
-    //         }
-    //     })
-    // })
+
+    //                 //when we need to work with resp data we need to filter that data first and store it in a variable for use it
+    //                 const receiverListFilter = data.filter(list => (list.message.authorId === id || list.message.receiverId === id))
+    //                 //const receiverListFilter = updatedReceiverList.filter(list => list.lastMessage);
+    //                 console.log(receiverListFilter)
+    //                 const filterReceiverList = receiverListFilter.filter(receiver => receiver._id !== findToken.name)
+    //                 setReceiverList(filterReceiverList)
+    //                 setDisplayReceiverList(filterReceiverList)
+    //                 // ...
+    //                 const imageDisplay = data.filter(list => list.message.image)
+    //                 // }
+    //                 //setSenderName(data._id)
+    //             } else {
+    //                 console.log("error");
+    //             }
+    //         })
+    // }, [showMessageState])
     useEffect(() => {
         axios.get('http://localhost:3000/api/fetchreceiver')
             .then(res => {
-                console.log(res.data);
                 const { status, data, message } = res.data;
-                console.log(data);
                 if (status) {
-                    // const updatedReceiverList = data.map(receiver => {
-                    //     const lastMessage = (receiver.message.authorId === findToken.name && receiver.message.receiverId === receiver._id) ||
-                    //         (receiver.message.receiverId === findToken.name && receiver.message.authorId === receiver._id);
-                    //     return {
-                    //         ...receiver,
-                    //         lastMessage
-                    //     };
-                    // });
+                    // Filter the receiver list based on the sender's messages
+                    const receiverListFilter = data.filter(list => {
+                        return (
+                            (list.message.authorId === id && list.message.receiver === receiver) ||
+                            (list.message.receiverId === id && list.message.author === userName)
+                        );
+                    });
 
+                    const filterReceiverList = receiverListFilter.filter(receiver => receiver._id !== findToken.name);
 
-                    //when we need to work with resp data we need to filter that data first and store it in a variable for use it
-                    const receiverListFilter = data.filter(list => list.message.authorId === findToken.id || list.message.receiverId === findToken.id)
-                    //const receiverListFilter = updatedReceiverList.filter(list => list.lastMessage);
-                    const filterReceiverList = receiverListFilter.filter(receiver => receiver._id !== findToken.name)
-                    setReceiverList(filterReceiverList)
-                    setDisplayReceiverList(filterReceiverList)
-                    const imageDisplay = data.filter(list => list.message.image)
-                    // }
-                    //setSenderName(data._id)
+                    // Update the last messages for each receiver
+                    let lastMessagesData = {};
+                    receiverListFilter.forEach(receiver => {
+                        const receiverId = receiver.message.receiverId || receiver.message.authorId;
+                        let lastMessage = {
+                            message: receiver.message.message,
+                            time: receiver.message.time,
+                        };
+                        lastMessagesData = lastMessage;
+                    });
+                    console.log(lastMessagesData)
+                    setLastMessages(lastMessagesData);
+
+                    setReceiverList(filterReceiverList);
+                    setDisplayReceiverList(filterReceiverList);
                 } else {
                     console.log("error");
                 }
-            })
-    }, [showMessageState])
+            });
+    }, [showMessageState]);
+
+
     const leave_room = () => {
         socket.emit('leave_room');
         navigate('/showusers');
     }
     return (
         <>
+            {console.log(loggedUserData)}
             <div className="chatbox-background">
                 <div className="container pt-3 fs-3">
                     <h3 className=" text-center text-white">send {receiver} from {userName} </h3>
-                    <button onClick={leave_room}>leave room</button>
+                    <div className="left-room">
+                        <button onClick={leave_room}>leave room</button>
+                    </div>
+
                     <div className="messaging">
                         <div className="inbox_msg">
-                            <div className="inbox_people">
+                            {/* <div className="inbox_people">
                                 <div className="headind_srch">
                                     <div className="recent_heading">
                                         <h4>Recent</h4>
@@ -235,30 +253,26 @@ function Chatbox({ socket, userName, room, receiver, receiverId, image }) {
                                     <div className="srch_bar">
                                         <div className="stylish-input-group">
                                             <input type="text" className="search-bar" placeholder="Search" value={searchInput} onChange={handleChange} />
-                                            {/* <span className="input-group-addon">
-                                                <button type="button" onClick={(e) => { handelSubmit(e.target.value) }}> <AiOutlineFileSearch /> </button>
-                                            </span> */}
                                         </div>
                                     </div>
                                 </div>
                                 <div className="inbox_chat">
                                     {displayReceiverList.map((messageShow) => {
+
+                                        console.log(messageShow)
                                         const { _id } = messageShow;
-                                        const { time, message, receiverId, image } = messageShow.message
-                                        console.log(image);
-                                        // const binaryImage = atob(image);
-                                        // const actualImage = Blob([binaryImage], { type: 'image/jpeg/webp' })
-                                        // setImageUrl(URL.createObjectURL(actualImage));
+                                        const { time, message, author, authorImage, receiver, receiverId, image } = messageShow.message
+                                      
                                         return (
 
                                             <div className="chat_list active_chat" onClick={() => { startChat(receiverId, _id) }}>
                                                 <div className="chat_people">
-                                                    {/* in image src we need to give this path because we store this images as a static so we need to give the static path */}
-                                                    <div className="chat_img"> <img src={!image ? default_image : `http://192.168.1.136:3000/images/${image}`}
+                                                    
+                                                    <div className="chat_img"> <img src={!image ? default_image : `http://localhost:3000/images/${!(receiverId == id) ? image : authorImage}`}
                                                         alt="default" /> </div>
 
                                                     <div className="chat_ib">
-                                                        <h5>{_id} <span className="chat_date">{time}</span></h5>
+                                                        <h5>{!(receiverId == id) ? receiver : author} <span className="chat_date">{time}</span></h5>
                                                         <p>{message}</p>
                                                     </div>
 
@@ -271,7 +285,7 @@ function Chatbox({ socket, userName, room, receiver, receiverId, image }) {
                                     }
 
                                 </div>
-                            </div>
+                            </div> */}
                             <div className="mesgs bg-light">
                                 <div className="msg_history">
                                     <div className="incoming_msg">

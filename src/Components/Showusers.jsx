@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from 'react'
+import React, { useEffect, useState, useCallback, useContext } from 'react'
 import axios from 'axios';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
@@ -10,8 +10,9 @@ import 'react-toastify/dist/ReactToastify.css';
 import useSWR from 'swr'
 import Users from './Users';
 import { Audio } from 'react-loader-spinner'
+import Home from './Home';
 function Showusers({ socket }) {
-
+    const loggedinUser = useContext(Home);
     const notify = () => toast.success("User Successfully Deleted");
     //const [messageReceived, setMessageReceived] = useState("");
     const [loading, setLoading] = useState(false);
@@ -136,7 +137,9 @@ function Showusers({ socket }) {
 
     return (
         <>
-
+            {loggedinUser && loggedinUser.map((elem, id) => {
+                console.log(elem)
+            })}
 
             <table className="table">
                 <thead className='table-danger'>
