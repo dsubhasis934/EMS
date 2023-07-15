@@ -13,7 +13,7 @@ import { Audio } from 'react-loader-spinner'
 import Home from './Home';
 function Showusers({ socket }) {
     const loggedinUser = useContext(Home);
-    const notify = () => toast.success("User Successfully Deleted");
+    const notify = () => toast.success("User Successfully Deleted", { autoClose: 1200 });
     //const [messageReceived, setMessageReceived] = useState("");
     const [loading, setLoading] = useState(false);
     const [loginUserId, setLoginUserId] = useState('');
@@ -120,9 +120,14 @@ function Showusers({ socket }) {
         setFieldvalue({ field: fieldname });
         setchangesort(sortType);
     }
+    // useEffect(() => {
+    //     socket.emit("user-connect", findToken.id);
+    // }, [socket])
     useEffect(() => {
-        socket.emit("user-connect", findToken.id);
-    }, [])
+        socket.on("received-data", (data) => {
+            console.log(data)
+        })
+    }, [socket])
     // useEffect(() => {
     //     socket.on("received_data", (data) => {
     //         console.log(data);
@@ -141,7 +146,7 @@ function Showusers({ socket }) {
                 console.log(elem)
             })}
 
-            <table className="table">
+            <table className="table table-striped">
                 <thead className='table-danger'>
                     <tr>
                         <th scope="col" value="name">Name

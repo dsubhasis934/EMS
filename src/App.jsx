@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import reactLogo from './assets/react.svg'
 import axios from 'axios';
-
+import { ToastContainer } from 'react-toastify';
 import './App.css'
 import Login from './Components/Login'
 import Signup from './Components/Signup';
@@ -44,6 +44,7 @@ function App() {
         <Route path="/chat" element={<Chat socket={socket} />} />
         {/* <Route path="/chat/:id" element={<Chat socket={socket} />} /> */}
       </Routes>
+      <ToastContainer />
     </>
 
   )

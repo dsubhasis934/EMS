@@ -8,6 +8,7 @@ const server = http.createServer(app);
 const { Server } = require('socket.io');
 const user = require('./modules/Chatschema');
 const userList = [];
+const activeUsers = {}
 let joinedRooms = {};
 
 
@@ -16,7 +17,7 @@ connectdb();
 //code for set socket.io
 const io = new Server(server, {
   cors: {
-    origin: ["http://127.0.0.1:5173", "http://localhost:5173"],
+    origin: ["http://127.0.0.1:5173", "http://localhost:5173", "http://192.168.0.7:5173", "http://localhost:5174"],
     methods: ["POST", "GET", "PATCH", "DELETE", "PUT"]
   }
 })
@@ -24,6 +25,10 @@ const io = new Server(server, {
 io.on('connection', (socket) => {
 
   socket.on("user-connect", (id) => {
+    // if (!activeUsers[id]) {
+    //   activeUsers[id] = socket.id;
+    //   userList.push(id);
+    // }
     if (!userList.includes(id)) {
       userList.push(id);
     }
@@ -86,11 +91,49 @@ io.on('connection', (socket) => {
 
 
     socket.in(data.receiverId).emit("message_received", data);
+
+    //   const receiverSocketId = activeUsers[data.receiverId];
+    // if (receiverSocketId) {
+    //   io.to(receiverSocketId).emit("notification", {
+    //     message: "New message received",
+    //     data: data // Include any additional data you want to send with the notification
+    //   });
+    // } else {
+    //   io.emit("notification", {
+    //     message: "New message received",
+    //     data: data // Include any additional data you want to send with the notification
+    //   });
+    // }
+    io.emit("notification", {
+      message: "New message received",
+      data: data // Include any additional data you want to send with the notification
+    });
   })
 
-
+  socket.on("logout", (id) => {
+    if (activeUsers[id]) {
+      delete activeUsers[id];
+      const loggedOutUserIndex = userList.indexOf(id);
+      if (loggedOutUserIndex !== -1) {
+        userList.splice(loggedOutUserIndex, 1);
+      }
+      io.emit("user_List", userList);
+    }
+  });
   socket.on('disconnect', () => {
     console.log('user disconnected');
+    const disconnectedUserId = Object.keys(activeUsers).find(
+      (userId) => activeUsers[userId] === socket.id
+    );
+
+    if (disconnectedUserId) {
+      delete activeUsers[disconnectedUserId];
+      const disconnectedUserIndex = userList.indexOf(disconnectedUserId);
+      if (disconnectedUserIndex !== -1) {
+        userList.splice(disconnectedUserIndex, 1);
+      }
+      io.emit("user_List", userList);
+    }
   });
 });
 

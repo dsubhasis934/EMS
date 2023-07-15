@@ -1,6 +1,6 @@
 import axios from 'axios';
 import React, { useState, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { AiOutlineSend } from 'react-icons/ai'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -8,10 +8,15 @@ import { AiOutlineFileSearch } from 'react-icons/ai'
 import { default_image } from '../images/Images';
 import useSWR from 'swr'
 import { useSelector } from 'react-redux';
+import { ZegoUIKitPrebuilt } from '@zegocloud/zego-uikit-prebuilt'
+import { BsFillCameraVideoFill } from 'react-icons/bs'
 function Chatbox({ socket, userName, room, receiver, receiverId, image, authorImage }) {
+    console.log(room)
     const loggedUserData = useSelector((state) => state.counter.loggedInuser)
     console.log(loggedUserData[0].image)
-    const notify = () => toast.success(`Message Received`);
+    const notify = () => toast.success('Message Received', { autoClose: 1200 });
+    const [sentMessage, setSentMessage] = useState("chat-message-right pb-4");
+    const [receivedMessage, setreceivedMessage] = useState("chat-message-left pb-4");
     const [message, setMessage] = useState("")
     const [receiverName, setReceieverName] = useState('');
     const [roomId, setRoomId] = useState('')
@@ -22,7 +27,7 @@ function Chatbox({ socket, userName, room, receiver, receiverId, image, authorIm
     const [displayReceiverList, setDisplayReceiverList] = useState([]);
     const [displayReceivedMsg, setDisplayReceivedMsg] = useState({ message: {} })
     const [receiverList, setReceiverList] = useState()
-
+    const [chatColor, setChatColor] = useState("bg-purple")
     const getToken = localStorage.getItem("token");
     const findToken = JSON.parse(getToken)
     console.log(findToken);
@@ -97,7 +102,7 @@ function Chatbox({ socket, userName, room, receiver, receiverId, image, authorIm
 
                 setDisplayReceiverList([displayReceivedMsg]);
                 //console.log(data);
-                notify();
+                // notify();
             }
 
         },)
@@ -233,17 +238,60 @@ function Chatbox({ socket, userName, room, receiver, receiverId, image, authorIm
         socket.emit('leave_room');
         navigate('/showusers');
     }
+    const changeTheme = (color) => {
+        if (color === "purple") {
+            setChatColor("bg-purple")
+            setSentMessage("sent_msg_purple")
+            setreceivedMessage("received_withd_msg_purple")
+        }
+        else if (color === "dark") {
+            setChatColor("bg-dark");
+            setSentMessage("sent_msg_dark")
+        }
+        else {
+            setChatColor("bg-default");
+            setSentMessage("chat-message-right pb-4")
+            setreceivedMessage("chat-message-left pb-4")
+        }
+    }
+    useEffect(() => {
+        if (setChatColor === "bg-dark") {
+
+        }
+    }, [setChatColor])
+
+    const myMeeting = async (element) => {
+        const appID = 852752793;
+        const serverSecret = "6cdf2c120e80ca9e4c147ca1e11e9947";
+        const kitToken = ZegoUIKitPrebuilt.generateKitTokenForTest(
+            appID, serverSecret, room, loggedUserData[0]._id, userName
+        )
+        const zc = ZegoUIKitPrebuilt.create(kitToken)
+        zc.joinRoom({
+            container: element,
+            scenario: {
+                mode: ZegoUIKitPrebuilt.OneONoneCall,
+
+            },
+            showScreenSharingButton: false
+        })
+    }
     return (
         <>
             {console.log(loggedUserData)}
             <div className="chatbox-background">
                 <div className="container pt-3 fs-3">
-                    <h3 className=" text-center text-white">send {receiver} from {userName} </h3>
+                    {/* <h3 className=" text-center text-white">send {receiver} from {userName} </h3> */}
                     <div className="left-room">
-                        <button onClick={leave_room}>leave room</button>
+                        <div className="theme-buttons" style={{ display: 'flex', gap: 10 }}>
+                            <button className="chatbox-buttons bg-purple" onClick={() => changeTheme("purple")}></button>
+                            <button className="chatbox-buttons bg-dark" onClick={() => changeTheme("dark")}></button>
+                            <button className="chatbox-buttons bg-default" onClick={() => changeTheme()}></button>
+                        </div>
+                        <button className="btn btn-primary" onClick={() => myMeeting()}><BsFillCameraVideoFill />  join</button>
+                        <button className="button-leave" onClick={leave_room}>leave room</button>
                     </div>
-
-                    <div className="messaging">
+                    <div className="messaging" style={{ marginTop: 8 }}>
                         <div className="inbox_msg">
                             {/* <div className="inbox_people">
                                 <div className="headind_srch">
@@ -286,7 +334,7 @@ function Chatbox({ socket, userName, room, receiver, receiverId, image, authorIm
 
                                 </div>
                             </div> */}
-                            <div className="mesgs bg-light">
+                            <div className={chatColor}>
                                 <div className="msg_history">
                                     <div className="incoming_msg">
                                         {/* <!-- <div className="incoming_msg_img"> <img src="https://ptetutorials.com/images/user-profile.png"
@@ -304,18 +352,111 @@ function Chatbox({ socket, userName, room, receiver, receiverId, image, authorIm
                                     )} --> */}
 
 
-                                        {showMessage.length > 0 && showMessage.map((messageList) => {
-                                            return (
-                                                <div key={messageList.id} className={userName == messageList.author ? "outgoing_msg" : "received_msg"}>
-                                                    <div className={userName == messageList.author ? "sent_msg" : "received_withd_msg"} key={messageList.id}>
-                                                        <p>{messageList.message}</p>
-                                                        <span className="time_date">{messageList.time}</span>
+
+                                        {/* {showMessage.length > 0 &&
+                                            showMessage.map((messageList, index) => {
+                                                console.log(messageList);
+                                                const isLastMessage =
+                                                    index === showMessage.length - 1 ||
+                                                    messageList.author !== showMessage[index + 1]?.author;
+
+                                                return (
+                                                    <div
+                                                        key={messageList.id}
+                                                        className={
+                                                            userName === messageList.author ? "outgoing_msg" : "received_msg"
+                                                        }
+                                                    >
+                                                        <div
+                                                            className={
+                                                                userName === messageList.author ? `${sentMessage}` : `${receivedMessage}`
+                                                            }
+                                                            key={messageList.id}
+                                                        >
+                                                            {isLastMessage && (
+                                                                <img
+                                                                    src={
+                                                                        typeof messageList.image === "string" ||
+                                                                            !(messageList.image instanceof Blob)
+                                                                            ? `http://localhost:3000/images/${userName === messageList.author
+                                                                                ? messageList.authorImage
+                                                                                : image
+                                                                            }`
+                                                                            : URL.createObjectURL(
+                                                                                userName === messageList.author
+                                                                                    ? messageList.authorImage
+                                                                                    : image
+                                                                            )
+                                                                    }
+                                                                    alt="Avatar"
+                                                                    class="img-fluid my-5"
+                                                                    style={{ width: "50px", height: "50px" }}
+                                                                />
+                                                            )}
+                                                            <p>{messageList.message}</p>
+                                                            <span className="time_date">{messageList.time}</span>
+                                                        </div>
                                                     </div>
-                                                </div>
-                                            )
-                                        }
-                                        )
-                                        }
+                                                );
+                                            })} */}
+
+                                        {showMessage.length > 0 &&
+                                            showMessage.map((messageList, index) => {
+                                                console.log(messageList);
+                                                // const isLastMessage =
+                                                //     index === showMessage.length - 1 ||
+                                                //     messageList.author !== showMessage[index + 1]?.author;
+
+                                                return (
+                                                    <div
+                                                        key={messageList.id}
+                                                        className={
+                                                            userName === messageList.author ? "outgoing_msg" : "received_msg"
+                                                        }
+                                                    >
+                                                        <div
+                                                            className={
+                                                                userName === messageList.author ? `${sentMessage}` : `${receivedMessage}`
+                                                            }
+                                                            key={messageList.id}
+                                                        >
+                                                            <div style={{ display: 'grid' }}>
+                                                                {/* {isLastMessage && (
+                                                                    
+                                                                )} */}
+                                                                <img
+                                                                    src={
+                                                                        typeof messageList.image === "string" ||
+                                                                            !(messageList.image instanceof Blob)
+                                                                            ? `http://localhost:3000/images/${userName === messageList.author
+                                                                                ? messageList.authorImage
+                                                                                : image
+                                                                            }`
+                                                                            : URL.createObjectURL(
+                                                                                userName === messageList.author
+                                                                                    ? messageList.authorImage
+                                                                                    : image
+                                                                            )
+                                                                    }
+                                                                    alt="Avatar"
+                                                                    className="rounded-circle mr-1"
+                                                                    style={{ width: "50px", height: "50px" }}
+                                                                />
+                                                                <span className="text-white small text-nowrap mt-2">{messageList.time}</span>
+                                                            </div>
+                                                            <div className={
+                                                                userName === messageList.author ? "flex-shrink-1 bg-light rounded py-2 px-3 mr-3" : "flex-shrink-1 bg-light rounded py-2 px-3 ml-3"
+                                                            } style={{ height: '20%', marginTop: '7px' }}>
+                                                                <div class="font-weight-bold mb-1 text-muted">{(receiverId === messageList.receiverId) ? `${messageList.author}` : `${messageList.author}`}</div>
+                                                                {messageList.message}
+                                                            </div>
+
+
+                                                        </div>
+                                                    </div>
+                                                );
+                                            })}
+
                                     </div>
 
                                 </div>
@@ -323,7 +464,7 @@ function Chatbox({ socket, userName, room, receiver, receiverId, image, authorIm
                                     <div className="input_msg_write">
                                         <input type="text" className="write_msg" onKeyUp={(e) => { e.key === "Enter" && sendMessage() }} placeholder="Type a message" value={message} onChange={(e) => { setMessage(e.target.value) }} />
                                         <button className="msg_send_btn" type="button" onClick={sendMessage}><AiOutlineSend className="send-icon" /></button>
-                                        <ToastContainer autoClose={1500} />
+                                        {/* <ToastContainer autoClose={1500} /> */}
                                     </div>
                                 </div>
                             </div>

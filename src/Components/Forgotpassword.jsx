@@ -7,7 +7,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 function Forgotpassword() {
     const navigate = useNavigate();
-    const notify = () => toast.success("Sucessfully changed password");
+    const notify = () => toast.success("Sucessfully changed password", { autoClose: 1200 });
     const [values, setValues] = useState({ email: "", secure_phase: "", reset_password: "", confirm_password: "" })
     const formSubmit = async (e) => {
         e.preventDefault();
@@ -35,7 +35,7 @@ function Forgotpassword() {
                 <div className="container py-5 h-100">
                     <div className="row d-flex justify-content-center align-items-center h-100">
                         <div className="col">
-                            <div className="card card-registration my-4">
+                            <div className="card card-registration my-4" id="card-registration">
                                 <div className="row g-0">
                                     <div className="col-xl-6 d-none d-xl-block">
                                         <img src={user_update}
@@ -73,7 +73,7 @@ function Forgotpassword() {
 
                                                 <div className="d-flex justify-content-center pt-3">
                                                     <button type="submit" className=" mt-3 btn btn-primary">update <FaUserEdit className="updateIcon fs-5" /></button>
-                                                    <ToastContainer autoClose={1500} />
+                                                    {/* <ToastContainer autoClose={1500} /> */}
                                                 </div>
                                             </form>
                                         </div>

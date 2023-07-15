@@ -6,10 +6,10 @@ import 'react-toastify/dist/ReactToastify.css';
 import { FaUserEdit } from 'react-icons/fa'
 import { GoSignIn } from 'react-icons/go'
 import { AiOutlineLogin } from 'react-icons/ai'
-import { login_sidebar_image, user_update,login_image,update_image } from '../images/Images';
+import { login_sidebar_image, user_update, login_image, update_image } from '../images/Images';
 function Signup() {
-  const notify = () => toast.success("User Successfully Signin");
-  const notifyUpdate = () => toast.success("User Successfully Updated");
+  const notify = () => toast.success("User Successfully Signin", { autoClose: 1200 });
+  const notifyUpdate = () => toast.success("User Successfully Updated", { autoClose: 1200 });
   const navigate = useNavigate();
   const gettoken = localStorage.getItem("token");
   let { id } = useParams();
@@ -122,7 +122,7 @@ function Signup() {
       <div className="container py-5 h-100">
         <div className="row d-flex justify-content-center align-items-center h-100">
           <div className="col">
-            <div className="card card-registration my-4">
+            <div className="card card-registration my-4" id="card-registration">
               <div className="row g-0">
                 <div className="col-xl-6 d-none d-xl-block">
                   <img src={!id ? login_image : update_image}
@@ -158,10 +158,41 @@ function Signup() {
                       </div>
 
 
-                      <div className="form-outline mb-4">
+                      {/* <div className="form-outline mb-4">
                         <input type="text" name="user_type" value={credentials.user_type} onChange={onChanges} className="form-control" id="exampleInputUsertype1" aria-describedby="emailHelp" placeholder="Enter your Designation" />
                         <label className="form-label" htmlFor="form3Example97">Designation</label>
+                      </div> */}
+                      <div className="form-outline mb-4">
+                        <label className="form-label" htmlFor="form3Example97">Designation</label>
+                        <div className="radio-button" style={{ position: 'relative', left: '19px' }}>
+
+                          <div>
+                            <input
+                              type="radio"
+                              id="adminRadio"
+                              name="user_type"
+                              value="admin"
+                              checked={credentials.user_type === "admin"}
+                              onChange={onChanges}
+                              className="form-check-input"
+                            />
+                            <label className="form-check-label" htmlFor="adminRadio">Admin</label>
+                          </div>
+                          <div>
+                            <input
+                              type="radio"
+                              id="employeeRadio"
+                              name="user_type"
+                              value="employee"
+                              checked={credentials.user_type === "employee"}
+                              onChange={onChanges}
+                              className="form-check-input"
+                            />
+                            <label className="form-check-label" htmlFor="employeeRadio">Employee</label>
+                          </div>
+                        </div>
                       </div>
+
                       <div className="form-group">
                         <label htmlFor="exampleInputImage">Upload Image</label>
                         <img
@@ -191,9 +222,10 @@ function Signup() {
                         <input type="checkbox" checked={checked} onChange={() => setChecked((d) => !d)} />show password
                       </div>
                       <div className="d-flex justify-content-center pt-3">
-                        <button type="submit" className="btn btn-success m-3">{(id == null) ? "Sign In" : "Update"} {(id == null) ? <GoSignIn className="signinIcon fs-5" /> : <FaUserEdit className="updateIcon fs-5" />}</button>
+                        {/* <button type="submit" className="btn btn-success m-3">{(id == null) ? "Sign In" : "Update"} {(id == null) ? <GoSignIn className="signinIcon fs-5" /> : <FaUserEdit className="updateIcon fs-5" />}</button> */}
+                        {(id == null) ? <button type="submit" className="btn btn-success m-3">Sign In <GoSignIn className="signinIcon fs-5" /></button> : <button type="submit" className="btn m-3" style={{ backgroundColor: "#ffd700" }}>Update <FaUserEdit className="updateIcon fs-5" /></button>}
                         <Link to='/login' className="m-3 btn btn-primary" style={!id ? { "display": "block" } : { "display": "none" }}>Login <AiOutlineLogin /></Link>
-                        <ToastContainer autoClose={1500} />
+                        {/* <ToastContainer autoClose={1500} /> */}
                       </div>
                       {/* <div className="d-flex justify-content-end pt-3">
                         <button type="submit" value={(id == null) ? "Signin" : "Update"} className="btn btn-success mt-2">{(id == null) ? <GoSignIn className="signinIcon fs-5" /> : <FaUserEdit className="updateIcon fs-5" />}</button>

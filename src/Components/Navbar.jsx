@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom';
+import { company_logo } from '../images/Images';
 function Navbar() {
     const token = localStorage.getItem('token');
     return (
@@ -8,8 +9,8 @@ function Navbar() {
                 <div class="navbar-inner">
                     <div class="container">
                         <Link class="brand" style={{ margin: 0, float: "none" }} to="/">
-                            <p>Employee Management System</p></Link>
-
+                            <img src={company_logo} style={{ width: 115 }} />
+                        </Link>
                         {/* <div className="logout" style={{ display: !token ? 'none' : 'block' }}>
                             <button>Logout</button>
                         </div> */}
